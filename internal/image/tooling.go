@@ -38,8 +38,14 @@ var sourceSkipDirs = map[string]bool{
 // sourceSkipNames are directories skipped at any depth.
 var sourceSkipNames = map[string]bool{".git": true, "node_modules": true}
 
-// sourceSkipFiles are files that may hold secrets or local state.
-var sourceSkipFiles = map[string]bool{".env": true}
+// sourceSkipFiles are files that may hold secrets or local state. AGENTS.md is
+// the author's local agent brief and .env.example is a local scratch file;
+// neither belongs in a source archive handed to a buyer.
+var sourceSkipFiles = map[string]bool{
+	".env":         true,
+	".env.example": true,
+	"agents.md":    true,
+}
 
 // maxSourceFile keeps a stray build artefact from bloating the archive.
 const maxSourceFile = 8 << 20

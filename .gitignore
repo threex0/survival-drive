@@ -1,5 +1,9 @@
 # Secrets and local state
 .env
+.env.example
+
+# Local agent instructions (kept on disk, never published)
+/AGENTS.md
 
 # Build output (repository root only - internal/image is source!)
 /bin/

@@ -349,7 +349,7 @@ func TestZipSourceExcludesPrivateMaterial(t *testing.T) {
 	for _, p := range []string{
 		"go.mod", "cmd/app/main.go", "internal/x/x.go", "internal/image/image.go",
 		"docs/spec.md", "docs/plan.md",
-		".env", "bin/app.exe", "GRAPHIFY-OUT/graph.json",
+		".env", ".env.example", "AGENTS.md", "bin/app.exe", "GRAPHIFY-OUT/graph.json",
 		"dist/app.exe", "cache/big.bin", "image/sku1/archives/x.zim",
 		"sku1-sell.lock.json",
 	} {
@@ -383,7 +383,7 @@ func TestZipSourceExcludesPrivateMaterial(t *testing.T) {
 	}
 	// The product spec (pricing, COGS) and drafts must never reach a buyer.
 	for _, forbidden := range []string{
-		"docs/spec.md", "docs/plan.md", ".env", "bin/app.exe", "GRAPHIFY-OUT/graph.json",
+		"docs/spec.md", "docs/plan.md", ".env", ".env.example", "AGENTS.md", "bin/app.exe", "GRAPHIFY-OUT/graph.json",
 		"dist/app.exe", "cache/big.bin", "image/sku1/archives/x.zim", "sku1-sell.lock.json",
 	} {
 		if got[forbidden] {
