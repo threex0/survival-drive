@@ -166,7 +166,14 @@ func cmdVerify(args []string) error {
 
 	mode := "full sha256"
 	if *quick {
-		mode = "size only"
+		// Size checks need the _MANIFEST.sizes sidecar written by newer builds.
+		mode = "presence only (old drive, no size index)"
+		for _, e := range entries {
+			if e.Size > 0 {
+				mode = "presence and size"
+				break
+			}
+		}
 	}
 	fmt.Printf("verifying %d entries on %s (%s) ...\n", len(entries), root, mode)
 	start := time.Now()

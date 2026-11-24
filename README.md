@@ -30,6 +30,7 @@ stays under the licences of its authors.
 | `README.txt` | buyer-facing guide, generated from the lock |
 | `LICENSES\` | `NOTICE.md`, licence texts, and the GPL source offer |
 | `_MANIFEST.sha256` | a checksum for every file |
+| `_MANIFEST.sizes` | expected size per file, so the quick check catches truncation without reading every byte |
 | `tools\` | this builder, the lock it used, and its source |
 
 Two reference SKUs are in `profiles/`:

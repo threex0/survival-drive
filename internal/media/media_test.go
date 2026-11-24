@@ -26,6 +26,7 @@ func makeImage(t *testing.T) string {
 		sha256Hex("beta") + "  models/m.gguf",
 	}
 	write(t, dir, "_MANIFEST.sha256", strings.Join(entries, "\n")+"\n")
+	write(t, dir, "_MANIFEST.sizes", "5\tarchives/a.zim\n4\tmodels/m.gguf\n")
 	return dir
 }
 
@@ -64,10 +65,10 @@ func TestCopyWritesAndVerifies(t *testing.T) {
 	if !rep.Verified {
 		t.Error("copy should verify what it wrote")
 	}
-	if rep.Files != 3 {
-		t.Errorf("files = %d, want 3", rep.Files)
+	if rep.Files != 4 {
+		t.Errorf("files = %d, want 4", rep.Files)
 	}
-	for _, rel := range []string{"archives/a.zim", "models/m.gguf", "_MANIFEST.sha256"} {
+	for _, rel := range []string{"archives/a.zim", "models/m.gguf", "_MANIFEST.sha256", "_MANIFEST.sizes"} {
 		if _, err := os.Stat(filepath.Join(target, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("missing %s: %v", rel, err)
 		}
@@ -83,8 +84,8 @@ func TestCopyDryRunWritesNothing(t *testing.T) {
 	if err != nil {
 		t.Fatalf("dry run: %v", err)
 	}
-	if rep.Files != 3 {
-		t.Errorf("planned files = %d, want 3", rep.Files)
+	if rep.Files != 4 {
+		t.Errorf("planned files = %d, want 4", rep.Files)
 	}
 	if entries, _ := os.ReadDir(target); len(entries) != 0 {
 		t.Errorf("dry run wrote %d entries", len(entries))
@@ -197,9 +198,16 @@ func TestVerifyDetectsCorruptionAndTruncation(t *testing.T) {
 		t.Fatalf("bad = %v, want [archives/a.zim]", bad)
 	}
 
-	// A quick (size-only) check cannot see corruption, but does see a truncation.
+	// A quick check compares sizes from _MANIFEST.sizes: same-size corruption
+	// is invisible, but a truncation is not.
 	if bad, _ := media.Verify(context.Background(), target, media.VerifyOptions{Full: false}); len(bad) != 0 {
-		t.Errorf("size-only verify should miss same-size corruption, got %v", bad)
+		t.Errorf("quick verify should miss same-size corruption, got %v", bad)
+	}
+	if err := os.WriteFile(p, []byte("alp"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if bad, _ := media.Verify(context.Background(), target, media.VerifyOptions{Full: false}); len(bad) != 1 || bad[0] != "archives/a.zim" {
+		t.Errorf("quick verify should flag a truncation, got %v", bad)
 	}
 	if err := os.Remove(p); err != nil {
 		t.Fatal(err)
@@ -227,5 +235,34 @@ func TestReadManifestAllowsSpacesInPaths(t *testing.T) {
 	}
 	if len(entries) != 1 || entries[0].Path != "library_pdfs/Are You Ready.pdf" {
 		t.Fatalf("entries = %+v", entries)
+	}
+}
+
+func TestReadManifestReadsSizeSidecar(t *testing.T) {
+	dir := t.TempDir()
+	sum := strings.Repeat("a", 64)
+	write(t, dir, "_MANIFEST.sha256", sum+"  archives/a.zim\n")
+	write(t, dir, "_MANIFEST.sizes", "11\tarchives/a.zim\n")
+
+	entries, err := media.ReadManifest(dir)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	if len(entries) != 1 || entries[0].Size != 11 {
+		t.Fatalf("entries = %+v, want size 11", entries)
+	}
+}
+
+func TestReadManifestWithoutSizeSidecar(t *testing.T) {
+	dir := t.TempDir()
+	sum := strings.Repeat("a", 64)
+	write(t, dir, "_MANIFEST.sha256", sum+"  archives/a.zim\n")
+
+	entries, err := media.ReadManifest(dir)
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	if entries[0].Size != 0 {
+		t.Fatalf("size = %d, want 0 when the sidecar is absent", entries[0].Size)
 	}
 }

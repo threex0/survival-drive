@@ -177,8 +177,15 @@ func TestBuildPlacesFilesExtractsZipsAndWritesManifest(t *testing.T) {
 			t.Errorf("manifest missing %q\n%s", want, body)
 		}
 	}
-	if strings.Contains(body, "_MANIFEST.sha256") || strings.Contains(body, "image_version.txt") {
-		t.Error("manifest must not list itself or image_version.txt")
+	if strings.Contains(body, "_MANIFEST.sha256") || strings.Contains(body, "_MANIFEST.sizes") || strings.Contains(body, "image_version.txt") {
+		t.Error("manifest must not list itself, the size sidecar, or image_version.txt")
+	}
+	sizes, err := os.ReadFile(filepath.Join(out, "_MANIFEST.sizes"))
+	if err != nil {
+		t.Fatalf("size sidecar: %v", err)
+	}
+	if !strings.Contains(string(sizes), "11\tarchives/wiki.zim") {
+		t.Errorf("size sidecar missing wiki.zim: %s", sizes)
 	}
 	if n := len(strings.Split(strings.TrimSpace(body), "\n")); n != rep.ManifestLines {
 		t.Errorf("manifest has %d lines, report says %d", n, rep.ManifestLines)

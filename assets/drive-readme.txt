@@ -17,6 +17,7 @@ WHAT IS ON THE DRIVE
   LICENSES\               what belongs to whom, and under what terms
   _MANIFEST.sha256        a checksum for every file, so you can prove the
                           drive is intact (see "Checking your drive")
+  _MANIFEST.sizes         expected sizes, used by the quick check
   image_version.txt       what this particular build contains
 
 

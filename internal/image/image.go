@@ -549,7 +549,7 @@ func knownLicenseNote(lic string) string {
 // reuse a digest already verified during the fetch instead of re-reading the
 // bytes.
 func writeManifest(outDir string, known map[string]string) (int, error) {
-	var lines []string
+	var lines, sizes []string
 	err := filepath.WalkDir(outDir, func(p string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -562,7 +562,7 @@ func writeManifest(outDir string, known map[string]string) (int, error) {
 			return err
 		}
 		rel = filepath.ToSlash(rel)
-		if rel == "_MANIFEST.sha256" || rel == "image_version.txt" {
+		if rel == "_MANIFEST.sha256" || rel == "_MANIFEST.sizes" || rel == "image_version.txt" {
 			return nil
 		}
 		sum, ok := known[rel]
@@ -571,15 +571,30 @@ func writeManifest(outDir string, known map[string]string) (int, error) {
 				return err
 			}
 		}
+		info, err := d.Info()
+		if err != nil {
+			return err
+		}
 		lines = append(lines, sum+"  "+rel)
+		sizes = append(sizes, fmt.Sprintf("%d\t%s", info.Size(), rel))
 		return nil
 	})
 	if err != nil {
 		return 0, err
 	}
 	sort.Strings(lines)
+	sort.Strings(sizes)
 	body := strings.Join(lines, "\n") + "\n"
-	return len(lines), os.WriteFile(filepath.Join(outDir, "_MANIFEST.sha256"), []byte(body), 0o644)
+	if err := os.WriteFile(filepath.Join(outDir, "_MANIFEST.sha256"), []byte(body), 0o644); err != nil {
+		return 0, err
+	}
+	// A sidecar lets `verify -quick` compare sizes without re-reading every
+	// byte. The sha256 manifest remains the authority and stays POSIX-clean.
+	sizesBody := strings.Join(sizes, "\n") + "\n"
+	if err := os.WriteFile(filepath.Join(outDir, "_MANIFEST.sizes"), []byte(sizesBody), 0o644); err != nil {
+		return 0, err
+	}
+	return len(lines), nil
 }
 
 // isSHA256Hex reports whether s looks like a sha256 digest.

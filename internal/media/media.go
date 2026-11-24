@@ -9,19 +9,23 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
 
-// Entry is one line of _MANIFEST.sha256.
+// Entry is one line of _MANIFEST.sha256, optionally with the size recorded in
+// the _MANIFEST.sizes sidecar.
 type Entry struct {
 	SHA256 string
 	Path   string // forward slashes, relative to the image root
+	Size   int64  // 0 when the drive predates _MANIFEST.sizes
 }
 
 // ReadManifest parses _MANIFEST.sha256 from an image or drive root.
@@ -47,6 +51,45 @@ func ReadManifest(root string) ([]Entry, error) {
 	}
 	if len(out) == 0 {
 		return nil, fmt.Errorf("%s: no entries", p)
+	}
+	sizes, err := readSizes(root)
+	if err != nil {
+		return nil, err
+	}
+	for i := range out {
+		if n, ok := sizes[out[i].Path]; ok {
+			out[i].Size = n
+		}
+	}
+	return out, nil
+}
+
+// readSizes parses the optional _MANIFEST.sizes sidecar. A missing file is not
+// an error: an older drive still verifies, but -quick can only check presence.
+func readSizes(root string) (map[string]int64, error) {
+	b, err := os.ReadFile(filepath.Join(root, "_MANIFEST.sizes"))
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	out := make(map[string]int64, 64)
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.TrimRight(line, "\r")
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		// "<size>\t<path>": tab-separated so paths may contain spaces.
+		sizeStr, path, ok := strings.Cut(line, "\t")
+		if !ok {
+			continue
+		}
+		n, err := strconv.ParseInt(sizeStr, 10, 64)
+		if err != nil {
+			continue
+		}
+		out[filepath.ToSlash(path)] = n
 	}
 	return out, nil
 }
@@ -301,6 +344,9 @@ func Verify(ctx context.Context, root string, o VerifyOptions) ([]string, error)
 			if info, err := os.Stat(p); err != nil {
 				bad = append(bad, e.Path)
 			} else {
+				if e.Size > 0 && info.Size() != e.Size {
+					bad = append(bad, e.Path)
+				}
 				bytes += info.Size()
 			}
 		}
