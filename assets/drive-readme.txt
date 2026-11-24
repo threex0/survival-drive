@@ -106,7 +106,7 @@ built from, and its complete source code. Anyone can reproduce or audit it.
   tools\survival-drive.exe    the builder (Windows x64, no dependencies)
   tools\source.zip            its full source (Go, standard library only)
   tools\{{LOCKFILE}}          the exact file list this drive was built from,
-                              including a sha256 for every file
+                              including a checksum for every file
 
 To re-download the same content and rebuild an identical drive:
 
@@ -114,7 +114,7 @@ To re-download the same content and rebuild an identical drive:
     tools\survival-drive.exe build -lock tools\{{LOCKFILE}} -out D:\image
     tools\survival-drive.exe burn  -image D:\image -drive E:
 
-The lock file pins every file by size and sha256, so the rebuilt drive can be
+The lock file pins every file by size and checksum, so the rebuilt drive can be
 compared with this one byte for byte. If a source ever changes upstream, the
 tool refuses to download it and tells you to resolve again rather than
 silently producing a different drive.

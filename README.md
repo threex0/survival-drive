@@ -5,7 +5,7 @@ Build, verify and clone a self-contained offline library and AI assistant for Wi
 `survival-drive` is one Go binary (standard library only, no third-party modules) that:
 
 - **resolves** a curated catalogue of public archives into a deterministic lock file
-  (a size and sha256 for every file),
+  (a size and checksum for every file: sha256, or md5 where the upstream publishes only that),
 - **fetches** those files from public mirrors with parallel ranged downloads and resume,
 - **builds** a drive-ready image: archives, models, servers, a one-click launcher,
   licence texts and a checksum manifest,
@@ -149,7 +149,7 @@ tools\survival-drive.exe fetch -lock tools\sku1-sell.lock.json -cache D:\cache
 tools\survival-drive.exe build -lock tools\sku1-sell.lock.json -out D:\image
 ```
 
-The lock pins every file by size and sha256. If an upstream file changes, the tool refuses it and
+The lock pins every file by size and checksum. If an upstream file changes, the tool refuses it and
 asks you to resolve again rather than silently producing a different drive.
 
 ---
