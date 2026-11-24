@@ -1,21 +1,21 @@
 # Secrets and local state
 .env
 
-# Build output
-bin/
-dist/
+# Build output (repository root only - internal/image is source!)
+/bin/
+/dist/
 
 # Generated artefacts
-graphify-out/
+/graphify-out/
 
 # Working data: locks, downloaded cache and the assembled image
-logs/
-cache/
-image/
+/logs/
+/cache/
+/image/
 *.lock.json
 
 # Private product and business notes. The public face is README.md.
-docs/
+/docs/
 
 # OS noise
 Thumbs.db
