@@ -1,0 +1,13 @@
+Public domain — United States Government works
+
+Works prepared by officers or employees of the United States Government as part
+of their official duties are not subject to copyright in the United States
+(17 U.S.C. § 105). This applies to the FEMA, U.S. Army, CDC and MedlinePlus
+material included in this library.
+
+Such works may still be subject to copyright in other countries, and may contain
+third-party material used with permission that is not itself in the public
+domain. Attribution is provided as a courtesy and is not a condition of the
+licence.
+
+MedlinePlus content is produced by the U.S. National Library of Medicine.

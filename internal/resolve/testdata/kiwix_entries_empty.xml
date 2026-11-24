@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>test-feed-empty</id>
+  <title>Filtered Entries (q=wikihow_en_maxi)</title>
+  <totalResults>0</totalResults>
+</feed>

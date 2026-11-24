@@ -1,0 +1,23 @@
+# Secrets and local state
+.env
+
+# Build output
+bin/
+dist/
+
+# Generated artefacts
+graphify-out/
+
+# Working data: locks, downloaded cache and the assembled image
+logs/
+cache/
+image/
+*.lock.json
+
+# Private product and business notes. The public face is README.md.
+docs/
+
+# OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store

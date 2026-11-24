@@ -1,0 +1,12 @@
+{
+  "id": "lite",
+  "sku": "sku1",
+  "name": "Field Test (64 GB USB flash, 62.0 GB usable)",
+  "capacity_bytes": 62019076096,
+  "fill_target": 0.85,
+  "catalogue": "catalogue.json",
+  "variants": {
+    "sell": { "include_noncommercial": false },
+    "full": { "include_noncommercial": true }
+  }
+}

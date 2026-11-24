@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # The product targets Windows, so Windows is the meaningful test target.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: false
+
+      - name: formatting
+        shell: pwsh
+        run: |
+          $bad = gofmt -l .
+          if ($bad) {
+            Write-Host "gofmt needed for:"
+            $bad
+            exit 1
+          }
+
+      - name: vet
+        run: go vet ./...
+
+      - name: test
+        run: go test ./...
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: dashboard regression test
+        run: node internal/launcher/ui/reload_test.js
+
+      - name: build both binaries
+        run: |
+          go build -trimpath -o dist/survival-drive.exe ./cmd/survival-drive
+          go build -trimpath -o dist/START_SURVIVAL_AI.exe ./cmd/start-survival-ai

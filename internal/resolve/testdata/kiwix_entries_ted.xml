@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>test-feed-ted</id>
+  <title>Filtered Entries (q=ted_mul_health)</title>
+  <entry>
+    <id>urn:uuid:aaaaaaaa-0000-0000-0000-000000000001</id>
+    <title>TED Health</title>
+    <name>ted_mul_health</name>
+    <flavour></flavour>
+    <category>ted</category>
+    <link rel="http://opds-spec.org/acquisition/open-access"
+          type="application/x-zim"
+          href="/zim/ted/ted_mul_health_2026-09.zim.meta4"
+          length="7848229274" />
+  </entry>
+  <entry>
+    <id>urn:uuid:aaaaaaaa-0000-0000-0000-000000000002</id>
+    <title>TED Health Care</title>
+    <name>ted_mul_health-care</name>
+    <flavour></flavour>
+    <category>ted</category>
+    <link rel="http://opds-spec.org/acquisition/open-access"
+          type="application/x-zim"
+          href="/zim/ted/ted_mul_health-care_2026-09.zim.meta4"
+          length="3779072000" />
+  </entry>
+</feed>

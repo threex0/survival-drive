@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="wikipedia_en_all_nopic_2026-06.zim">
+    <size>52685168640</size>
+    <hash type="sha-256">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</hash>
+    <pieces length="4194304" type="sha-1">
+      <hash>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</hash>
+    </pieces>
+    <url>https://mirrors.dotsrc.org/kiwix/zim/wikipedia/wikipedia_en_all_nopic_2026-06.zim</url>
+    <url>https://dumps.wikimedia.org/kiwix/zim/wikipedia/wikipedia_en_all_nopic_2026-06.zim</url>
+  </file>
+</metalink>

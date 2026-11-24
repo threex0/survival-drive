@@ -1,0 +1,12 @@
+{
+  "id": "sku2",
+  "sku": "sku2",
+  "name": "Bunker Edition (512 GB NVMe SSD)",
+  "capacity_bytes": 512000000000,
+  "fill_target": 0.90,
+  "catalogue": "catalogue.json",
+  "variants": {
+    "sell": { "include_noncommercial": false },
+    "full": { "include_noncommercial": true }
+  }
+}

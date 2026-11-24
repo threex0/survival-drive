@@ -1,0 +1,48 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: false
+
+      - name: test
+        run: go test ./...
+
+      - name: build and checksum
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          go build -trimpath -ldflags "-s -w" -o dist/survival-drive.exe ./cmd/survival-drive
+          go build -trimpath -ldflags "-s -w" -o dist/START_SURVIVAL_AI.exe ./cmd/start-survival-ai
+
+          # sha256sum format: <hash>  <name>
+          Get-ChildItem dist\*.exe | ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$hash  $($_.Name)"
+          } | Set-Content -Encoding ascii dist\SHA256SUMS.txt
+
+          Get-Content dist\SHA256SUMS.txt
+
+      - name: publish
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $assets = Get-ChildItem dist\*.exe | ForEach-Object { $_.FullName }
+          gh release create $env:GITHUB_REF_NAME @assets dist\SHA256SUMS.txt `
+            --title $env:GITHUB_REF_NAME `
+            --generate-notes

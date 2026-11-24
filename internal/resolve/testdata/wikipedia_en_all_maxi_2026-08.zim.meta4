@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <generator>MirrorBrain/2.19.0</generator>
+  <origin dynamic="true">https://lb.download.kiwix.org/zim/wikipedia/wikipedia_en_all_maxi_2026-08.zim.meta4</origin>
+  <publisher>
+    <name>Kiwix project</name>
+    <url>https://kiwix.org</url>
+  </publisher>
+
+  <file name="wikipedia_en_all_maxi_2026-08.zim">
+    <size>127418087648</size>
+    <hash type="md5">ad1d4aeda3963a9a5dd6d9b73d6b0126</hash>
+    <hash type="sha-1">819a2fa3f5eb99ecc8a95dedc8643a177882c289</hash>
+    <hash type="sha-256">34162d18b9f96f494eac48a73a309c72e0bc95d85f76be405d0f5de795854aa6</hash>
+    <pieces length="4194304" type="sha-1">
+      <hash>b67cba440a5502b9fb4c816dc6c867a8feb76a49</hash>
+      <hash>177c9f4ba6fa03cf4a1a6e9601a409b897870e6f</hash>
+      <hash>ae91bf9870138e68a3cdeb77d04f839b69df7aa9</hash>
+    </pieces>
+    <url>https://kiwix.org</url>
+    <url>https://dumps.wikimedia.org/kiwix/zim/wikipedia/wikipedia_en_all_maxi_2026-08.zim</url>
+    <url>https://mirrors.dotsrc.org/kiwix/zim/wikipedia/wikipedia_en_all_maxi_2026-08.zim</url>
+    <url>https://ftp.nluug.nl/pub/kiwix/zim/wikipedia/wikipedia_en_all_maxi_2026-08.zim</url>
+  </file>
+</metalink>

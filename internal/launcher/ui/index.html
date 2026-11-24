@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SURVIVAL AI</title>
+<style>
+  :root {
+    --bg: #0b0f12; --panel: #121a20; --line: #1f2c35; --ink: #d7e3ea;
+    --dim: #6f8794; --accent: #7fd45a; --warn: #e0b341; --bad: #e05545;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 "Segoe UI", system-ui, sans-serif; min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 18px; padding: 12px 18px;
+    background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  h1 { font-size: 15px; letter-spacing: .16em; margin: 0; font-weight: 600; }
+  h1 span { color: var(--accent); }
+  .pills { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .pill {
+    display: flex; align-items: center; gap: 6px; padding: 3px 10px;
+    border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: #9fb3bf;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #4a5a63; }
+  .dot.up { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .dot.down { background: var(--bad); }
+
+  main { flex: 1; padding: 26px; }
+  .hint { color: var(--dim); font-size: 13px; margin: 0 0 18px; max-width: 62ch; }
+  .gone {
+    margin: 0 0 18px; max-width: 62ch; padding: 10px 14px; border-radius: 8px;
+    border: 1px solid #5a2b25; background: #1e1210; color: #f0b8ae; font-size: 13px;
+  }
+  .cards {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    max-width: 1100px;
+  }
+  .card {
+    text-align: left; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; color: var(--ink); font: inherit;
+    cursor: pointer; transition: border-color .12s, transform .12s;
+    display: flex; flex-direction: column; gap: 6px; min-height: 118px;
+  }
+  .card:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-1px); }
+  .card { text-decoration: none; color: var(--ink); }
+  .card.disabled { opacity: .45; pointer-events: none; }
+  .card .title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card .desc { color: var(--dim); font-size: 12.5px; flex: 1; }
+  .card .action { color: var(--accent); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+  .card.disabled .action { color: var(--dim); }
+
+  footer {
+    display: flex; align-items: center; gap: 14px; padding: 8px 18px;
+    background: var(--panel); border-top: 1px solid var(--line); font-size: 12px; color: #8fa3af;
+  }
+  footer .meta { display: flex; gap: 14px; flex-wrap: wrap; }
+  footer b { color: var(--ink); font-weight: 600; }
+  .btn {
+    margin-left: auto; background: #16232b; color: var(--ink); border: 1px solid var(--line);
+    padding: 5px 12px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 12px;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .bad { color: var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>SURVIVAL <span>AI</span></h1>
+  <div class="pills">
+    <div class="pill"><span class="dot" id="dot-ai"></span><span id="pill-ai">AI</span></div>
+    <div class="pill"><span class="dot" id="dot-lib"></span><span id="pill-lib">Library</span></div>
+    <div class="pill" id="pill-ram">RAM ...</div>
+  </div>
+</header>
+
+<main>
+  <noscript>
+    <p class="hint" style="color:#e0b341">
+      This page needs JavaScript to read the ports the servers were given on this launch.
+      If scripts are blocked, start the launcher and open the library directly from the
+      console window's log file, or enable JavaScript for 127.0.0.1.
+    </p>
+  </noscript>
+  <p id="gone" class="gone" hidden>
+    The launcher has stopped, so new pages will not load. Close this page, run
+    <b>START_SURVIVAL_AI.exe</b> again, and reopen the section you want.
+  </p>
+  <p class="hint" id="hint">
+    Everything here runs on this drive. Sections open in their own browser tab -
+    close the tab and this page is still here.
+  </p>
+  <div class="cards">
+    <a class="card disabled" data-view="ai" target="_blank" rel="noopener noreferrer">
+      <span class="title"><span class="dot" data-dot="ai"></span>Survival Advisor</span>
+      <span class="desc">Ask questions about first aid, water, shelter, repairs - answered offline by a local model.</span>
+      <span class="action" data-action="ai">Open</span>
+    </a>
+    <a class="card disabled" data-view="wiki" target="_blank" rel="noopener noreferrer">
+      <span class="title"><span class="dot" data-dot="lib"></span>Encyclopedia</span>
+      <span class="desc">All of Wikipedia, full text, searchable in a second.</span>
+      <span class="action">Open</span>
+    </a>
+    <a class="card disabled" data-view="medical" target="_blank" rel="noopener noreferrer">
+      <span class="title"><span class="dot" data-dot="lib"></span>Medical</span>
+      <span class="desc">MedlinePlus and first-aid references.</span>
+      <span class="action">Open</span>
+    </a>
+    <a class="card disabled" data-view="repair" target="_blank" rel="noopener noreferrer">
+      <span class="title"><span class="dot" data-dot="lib"></span>Repair</span>
+      <span class="desc">Practical fixes: DIY, electrical, engines, bicycles.</span>
+      <span class="action">Open</span>
+    </a>
+    <a class="card disabled" data-view="search" target="_blank" rel="noopener noreferrer">
+      <span class="title"><span class="dot" data-dot="lib"></span>Search everything</span>
+      <span class="desc">One search box across every archive on the drive.</span>
+      <span class="action">Open</span>
+    </a>
+  </div>
+</main>
+
+<footer>
+  <div class="meta">
+    <span>model <b id="m-model">-</b></span>
+    <span>context <b id="m-ctx">-</b></span>
+    <span>backend <b id="m-backend">-</b></span>
+    <span>archives <b id="m-zims">-</b></span>
+  </div>
+  <button class="btn" id="verify">Check drive integrity</button>
+</footer>
+
+<script>
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const state = { status: null, failures: 0 };
+
+// target is a pure function of the status and the chosen section: the URL that
+// section should open, or the reason it cannot.
+//
+// Sections are opened as top-level tabs through real <a target="_blank"> links.
+// Two earlier designs failed here: embedding kiwix in an iframe broke link clicks
+// (kiwix serves articles with a CSP `sandbox`), and window.open() gets suppressed
+// by popup blockers in Edge.
+function target(view, s) {
+  const ai = s.llama || {}, lib = s.kiwix || {};
+
+  if (view === "ai") {
+    if (!ai.up) {
+      return s.starting
+        ? { reason: "starting" }
+        : { reason: ai.error || "the assistant server is not running" };
+    }
+    return { url: ai.url + "/" };
+  }
+
+  if (!lib.up) {
+    return s.starting
+      ? { reason: "starting" }
+      : { reason: lib.error || "the library server is not running" };
+  }
+
+  const book = (name) => (s.books && s.books[name] ? "&books.name=" + s.books[name] : "");
+  switch (view) {
+    // An empty ?pattern= is rejected by kiwix-serve, so Search opens the library
+    // home, which carries the search box.
+    case "search":  return { url: lib.url + "/" };
+    case "wiki":    return { url: lib.url + "/content/" + ((s.books && s.books.wikipedia) || "") };
+    case "medical": return { url: lib.url + "/search?pattern=first+aid" + book("medlineplus") };
+    case "repair":  return { url: lib.url + "/search?pattern=repair" + book("diy") };
+    default:        return { url: lib.url + "/" };
+  }
+}
+
+function chrome() {
+  const s = state.status;
+  if (!s) return;
+  const ai = s.llama || {}, lib = s.kiwix || {};
+  const set = (id, text) => { const el = $(id); if (el.textContent !== text) el.textContent = text; };
+
+  $("dot-ai").className = "dot " + (ai.up ? "up" : (s.starting ? "" : "down"));
+  $("dot-lib").className = "dot " + (lib.up ? "up" : (s.starting ? "" : "down"));
+  set("pill-ai", ai.up ? "AI ready" : (s.starting ? "AI loading..." : "AI offline"));
+  set("pill-lib", lib.up ? "Library ready" : (s.starting ? "Library loading..." : "Library offline"));
+  set("pill-ram", (s.ram_gib || 0).toFixed(0) + " GB RAM");
+  set("m-model", s.model ? s.model + " (" + (s.model_gib || 0).toFixed(1) + " GiB)" : "none");
+  set("m-ctx", String(s.context || "?"));
+  set("m-backend", s.backend || "?");
+  set("m-zims", String(s.zims || 0));
+
+  document.querySelectorAll(".card").forEach((card) => {
+    const view = card.dataset.view;
+    const t = target(view, s);
+    const dot = card.querySelector("[data-dot]");
+    if (dot) dot.className = "dot " + (t.url ? "up" : (s.starting ? "" : "down"));
+
+    const action = card.querySelector(".action");
+    const onDemand = view === "ai" && !t.url && s.ai_can_start && s.ai_on_demand;
+
+    if (t.url) {
+      card.setAttribute("href", t.url);
+      card.classList.remove("disabled");
+      card.title = t.url;
+      if (action) action.textContent = "Open";
+    } else if (onDemand) {
+      // Loading a multi-gigabyte model is a deliberate act: the library never
+      // waits for it, and a small machine never has to carry it.
+      card.setAttribute("href", "#start-ai");
+      card.classList.remove("disabled");
+      card.title = s.ai_reason || "Start the assistant";
+      if (action) action.textContent = "Start assistant";
+    } else {
+      card.removeAttribute("href");
+      card.classList.add("disabled");
+      card.title = s.ai_reason || "";
+      if (action) action.textContent = t.reason === "starting" ? "Starting..." : "Unavailable";
+    }
+  });
+
+  let hint;
+  if (!lib.up && s.starting) {
+    hint = "Loading the library...";
+  } else if (lib.up && !ai.up && s.starting) {
+    hint = "The library is ready - open any section now. The assistant is still loading; on a USB stick that can take a few minutes.";
+  } else if (!ai.up && s.ai_can_start && s.ai_on_demand) {
+    hint = "The library is ready. The assistant is not loaded - open Survival Advisor to start it when you want it (it takes a minute and some memory).";
+  } else if (!ai.up) {
+    hint = "The assistant is not available on this machine; every library section still works. " + (s.ai_reason || "");
+  } else {
+    hint = "Everything here runs on this drive. Sections open in their own browser tab.";
+  }
+  set("hint", hint);
+}
+
+async function refresh() {
+  try {
+    const r = await fetch("/api/status", { cache: "no-store" });
+    state.status = await r.json();
+    state.failures = 0;
+    $("gone").hidden = true;
+    chrome();
+  } catch (e) {
+    // A failed poll keeps the last known state, but repeated failures mean the
+    // launcher is gone - and kiwix-serve exits with it, so every new page will
+    // fail to load. Say so instead of leaving blank tabs unexplained.
+    state.failures++;
+    if (state.failures >= 3) $("gone").hidden = false;
+  }
+}
+
+document.querySelectorAll(".card").forEach((card) => {
+  card.addEventListener("click", async (ev) => {
+    if (card.getAttribute("href") !== "#start-ai") return; // real links navigate
+    ev.preventDefault();
+    const action = card.querySelector(".action");
+    if (action) action.textContent = "Starting...";
+    try {
+      const r = await fetch("/api/ai/start", { method: "POST" });
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        if (action) action.textContent = "Unavailable";
+        card.classList.add("disabled");
+        card.title = j.error || "cannot start the assistant";
+      }
+    } catch (e) {
+      if (action) action.textContent = "Start failed";
+    }
+  });
+});
+
+$("verify").addEventListener("click", async () => {
+  const btn = $("verify");
+  btn.disabled = true;
+  btn.textContent = "Checking...";
+  try {
+    const j = await (await fetch("/api/verify", { method: "POST" })).json();
+    btn.textContent = j.ok
+      ? "Intact: " + j.checked + " files"
+      : j.missing.length + " of " + j.checked + " missing";
+    btn.classList.toggle("bad", !j.ok);
+  } catch (e) {
+    btn.textContent = "Check failed";
+    btn.classList.add("bad");
+  }
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.classList.remove("bad");
+    btn.textContent = "Check drive integrity";
+  }, 8000);
+});
+
+refresh();
+setInterval(refresh, 3000);
+</script>
+</body>
+</html>

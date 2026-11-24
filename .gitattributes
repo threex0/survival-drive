@@ -1,0 +1,18 @@
+# Source is LF; Windows scripts are CRLF so they behave in cmd.exe.
+* text=auto
+
+*.go   text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+
+*.exe  binary
+*.zip  binary
+*.zim  binary
+*.gguf binary
+*.pdf  binary

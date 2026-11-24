@@ -1,0 +1,12 @@
+{
+  "id": "sku1",
+  "sku": "sku1",
+  "name": "Go-Bag Edition (128 GB USB 3.2 flash)",
+  "capacity_bytes": 128000000000,
+  "fill_target": 0.85,
+  "catalogue": "catalogue.json",
+  "variants": {
+    "sell": { "include_noncommercial": false },
+    "full": { "include_noncommercial": true }
+  }
+}

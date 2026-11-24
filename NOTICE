@@ -1,0 +1,86 @@
+survival-drive
+Copyright (C) 2026 the survival-drive authors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+
+THIRD-PARTY COMPONENTS
+===============================================================================
+
+This repository contains no third-party content. It contains a catalogue of
+public URLs and hashes. When you run it, it downloads the components below and
+places them on the drive you are building. Each remains under its own licence.
+
+Component                     Licence                 Source
+---------------------------------------------------------------------------
+llama.cpp (Vulkan, CPU)       MIT                     github.com/ggml-org/llama.cpp
+                                                      (pinned tag b12529)
+Kiwix tools (kiwix-serve)     GPL-3.0-or-later        download.kiwix.org/release/
+                                                      kiwix-tools/
+                                                      kiwix-tools_win-x86_64-3.8.1.zip
+                                                      source: github.com/kiwix/kiwix-tools
+Wikipedia, Wikibooks,         CC BY-SA 4.0            library.kiwix.org
+Wikisource, Wiktionary,
+Wikivoyage contributors
+Stack Exchange contributors   CC BY-SA 4.0            library.kiwix.org
+Appropedia, energypedia,      CC BY-SA 4.0            library.kiwix.org
+Gardenology, based.cooking,
+FOSS cooking, WikiProject
+Medicine contributors
+Project Gutenberg             Public domain (US)      library.kiwix.org
+MedlinePlus (U.S. NLM)        Public domain (US Gov)  library.kiwix.org
+FEMA / US Army / CDC PDFs     Public domain (US Gov)  via fema.gov, army.mil, cdc.gov
+OpenStreetMap contributors    ODbL 1.0                openstreetmap.org
+Gemma models                  Gemma Terms of Use      huggingface.co/google
+Qwen models                   Apache-2.0              huggingface.co/Qwen
+MSVC runtime DLLs             Microsoft               shipped beside the servers
+                              redistributable         (vcruntime140, vcruntime140_1,
+                                                      msvcp140)
+iFixit guides                 CC BY-NC-SA 3.0         ifixit.com  (full variant only)
+TED talks                     CC BY-NC-ND 4.0         ted.com     (full variant only)
+zimgit packs                  Unverified              full variant only, never sold
+
+The `sell` variant deliberately excludes every item marked `commercial_ok:
+false`: the non-commercial iFixit and TED material, and the five zimgit packs
+whose upstream licence could not be established. The `full` variant is the
+personal-use build that includes them.
+
+
+GPL SOURCE OFFER
+===============================================================================
+
+Kiwix tools are distributed as binaries on built drives under GPL-3.0-or-later.
+The complete corresponding source for the exact version is available from the
+URL above, and on request at:
+
+    https://github.com/threex0/survival-drive/issues
+
+This written offer is valid for three years from the date of the build. Every
+build also carries the source of the builder itself in `tools\source.zip`, and
+the builder's source is published at the repository above.
+
+The licences of our own code and of each downloaded component are reproduced on
+the drive in `LICENSES\`; `LICENSES\NOTICE.md` is generated per build and names
+the exact source location of every GPL component.
+
+
+TRADEMARKS AND ENDORSEMENT
+===============================================================================
+
+Wikipedia, Wikimedia, Kiwix, Google, Gemma, Hugging Face, Stack Exchange,
+iFixit, TED, OpenStreetMap and all other names are trademarks or registered
+trademarks of their respective owners. Their use here is descriptive only.
+
+This project is not affiliated with, sponsored by or endorsed by any of them.
+A drive built by this tool contains Wikipedia content; it is not "official
+Wikipedia", and no provider has reviewed or approved the build.

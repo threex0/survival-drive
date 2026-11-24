@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="wikipedia_en_all_mini_2026-09.zim">
+    <size>14388140442</size>
+    <hash type="sha-256">cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc</hash>
+    <url>https://mirrors.dotsrc.org/kiwix/zim/wikipedia/wikipedia_en_all_mini_2026-09.zim</url>
+  </file>
+</metalink>

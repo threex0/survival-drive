@@ -1,0 +1,28 @@
+[
+  {
+    "tag_name": "b12510",
+    "draft": false,
+    "prerelease": true,
+    "assets": [
+      {
+        "name": "llama-b12510-bin-win-vulkan-x64.zip",
+        "size": 38900000,
+        "browser_download_url": "https://example.invalid/b12510/llama-b12510-bin-win-vulkan-x64.zip",
+        "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+      }
+    ]
+  },
+  {
+    "tag_name": "v1.2.0",
+    "draft": false,
+    "prerelease": false,
+    "assets": [
+      {
+        "name": "llama-v1.2.0-bin-win-vulkan-x64.zip",
+        "size": 39000000,
+        "browser_download_url": "https://example.invalid/v1.2.0/llama-v1.2.0-bin-win-vulkan-x64.zip",
+        "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+      }
+    ]
+  }
+]
