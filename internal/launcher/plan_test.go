@@ -90,30 +90,46 @@ func TestAIStartMode(t *testing.T) {
 	// 4.64 GiB weights x 1.25 + 1 GiB, computed the way SelectModel does.
 	smallest := int64(float64(4984194560)*1.25) + (1 << 30)
 
-	// Big machine, plenty free: start it automatically.
-	if auto, why := AIStartMode(32<<30, 20<<30, smallest); !auto {
-		t.Errorf("32 GiB with 20 free should auto-start, got %q", why)
-	}
-	// 16 GiB machine with lots free: the model would fit, but it is deferred.
-	auto, why := AIStartMode(16<<30, 12<<30, smallest)
-	if auto {
-		t.Error("16 GiB machine should not auto-start a 4.6 GiB model")
-	}
-	if !strings.Contains(why, "on request") {
+	// Default: never auto-start, even on a big machine. The library must always
+	// come up before the model can compete for the same USB device.
+	if auto, why := AIStartMode(false, 32<<30, 20<<30, smallest); auto {
+		t.Error("the default must be on-request, not auto-start")
+	} else if !strings.Contains(why, "on request") {
 		t.Errorf("reason = %q, want it to mention on-request", why)
 	}
+	// Explicit opt-in on a big machine with room: allowed.
+	if auto, why := AIStartMode(true, 32<<30, 20<<30, smallest); !auto {
+		t.Errorf("32 GiB with 20 free and -auto-ai should start, got %q", why)
+	}
+	// Opt-in does not override the 24 GiB threshold.
+	if auto, why := AIStartMode(true, 16<<30, 12<<30, smallest); auto || !strings.Contains(why, "on request") {
+		t.Errorf("16 GiB with -auto-ai: auto=%v why=%q", auto, why)
+	}
 	// Small machine: not enough free memory even to offer it.
-	if auto, why := AIStartMode(8<<30, 3<<30, smallest); auto || !strings.Contains(why, "memory") {
+	if auto, why := AIStartMode(true, 8<<30, 3<<30, smallest); auto || !strings.Contains(why, "memory") {
 		t.Errorf("8 GiB with 3 free: auto=%v why=%q", auto, why)
 	}
 	// No model on the drive at all.
-	if auto, why := AIStartMode(64<<30, 60<<30, 0); auto || why == "" {
+	if auto, why := AIStartMode(true, 64<<30, 60<<30, 0); auto || why == "" {
 		t.Error("no model must never auto-start")
 	}
 	// A 400 GiB Bunker model on a 32 GiB machine: no.
 	huge := int64(float64(15430000000) * 1.25)
-	if auto, _ := AIStartMode(32<<30, 20<<30, huge); auto {
+	if auto, _ := AIStartMode(true, 32<<30, 20<<30, huge); auto {
 		t.Error("a 27B model should not auto-start on 32 GiB")
+	}
+}
+
+func TestNormalizeRootPath(t *testing.T) {
+	sep := string(os.PathSeparator)
+	if got := normalizeRootPath("G:"); got != "G:"+sep {
+		t.Errorf("normalizeRootPath(G:) = %q, want a drive root", got)
+	}
+	if got := normalizeRootPath("G:" + sep); got != "G:"+sep {
+		t.Errorf("an already-root path changed to %q", got)
+	}
+	if got := normalizeRootPath(`C:\data`); got != `C:\data` {
+		t.Errorf("a directory path changed to %q", got)
 	}
 }
 

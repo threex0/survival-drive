@@ -42,6 +42,11 @@ type Config struct {
 	// small-machine behaviour can be demonstrated on any hardware. 0 = measure.
 	AssumeRAMGiB  int
 	AssumeFreeGiB int
+	// AutoAI lets the assistant start without a click on a machine that meets
+	// the memory budget. Off by default: the library is the product that must
+	// always come up, and a multi-gigabyte model loading from the same USB
+	// device can make every page slow. Owners start it from the dashboard.
+	AutoAI bool
 }
 
 // child is one supervised process.
@@ -54,6 +59,16 @@ type child struct {
 	up    bool
 	err   string
 	start time.Time
+}
+
+// normalizeRootPath turns a bare drive letter into a drive root. On Windows a
+// path like "G:" is drive-relative; joining "bin" to it yields "G:bin", which
+// does not exist. Children must always be resolved from "G:\".
+func normalizeRootPath(root string) string {
+	if len(root) == 2 && root[1] == ':' {
+		return root + string(os.PathSeparator)
+	}
+	return root
 }
 
 // Launcher owns the children and the dashboard.
@@ -83,6 +98,7 @@ func New(cfg Config) (*Launcher, error) {
 		}
 		cfg.Root = filepath.Dir(exe)
 	}
+	cfg.Root = normalizeRootPath(cfg.Root)
 	if cfg.ReadyTimeout <= 0 {
 		// Loading a 5 GB model off a USB stick is not fast; llama-server answers
 		// 503 until it is done, so this budget is "model loaded", not "port open".
@@ -170,16 +186,18 @@ func New(cfg Config) (*Launcher, error) {
 					"no llama-server binary under bin\\llama-vulkan or bin\\llama-cpu; library unaffected")
 			}
 
-			auto, reason := AIStartMode(ram, avail, SmallestModelNeed(models))
+			auto, reason := AIStartMode(cfg.AutoAI, ram, avail, SmallestModelNeed(models))
 			if !auto {
 				if reason != "" {
 					plan.AIReason = reason
 					plan.Warnings = append(plan.Warnings, reason)
 				}
 				cfg.NoAI = true
-				plan.AIOnDemand = plan.AICanStart
 			}
-			// Never auto-start something that cannot start (missing binary).
+			// Keep the on-demand path available even if an auto-start failed:
+			// the card can offer a retry. Never offer it when the machine cannot
+			// host a model at all.
+			plan.AIOnDemand = plan.AICanStart
 			if !plan.AICanStart {
 				cfg.NoAI = true
 				plan.AIOnDemand = false
@@ -544,10 +562,18 @@ func (l *Launcher) startChild(ctx context.Context, c *child) error {
 	// Watch for early exit while we poll for readiness.
 	exited := make(chan error, 1)
 	go func() {
-		exited <- cmd.Wait()
+		err := cmd.Wait()
+		exited <- err
 		l.mu.Lock()
 		c.up = false
+		c.err = fmt.Sprintf("%s exited", c.name)
 		l.mu.Unlock()
+		if c.name == "llama-server" {
+			// A model or GPU crash is not allowed to look like a dead drive.
+			l.logf("llama-server exited (%v); library unaffected and still serving", err)
+		} else {
+			l.logf("%s exited (%v)", c.name, err)
+		}
 	}()
 
 	deadline := time.Now().Add(l.cfg.ReadyTimeout)

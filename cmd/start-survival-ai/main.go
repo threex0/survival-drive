@@ -18,6 +18,7 @@ func main() {
 	root := flag.String("root", "", "drive root (default: directory of this executable)")
 	uiPort := flag.Int("port", 0, "dashboard port (default: pick a free one)")
 	noAI := flag.Bool("no-ai", false, "serve the library only")
+	autoAI := flag.Bool("auto-ai", false, "start the assistant without a click (default: on request)")
 	noKiwix := flag.Bool("no-kiwix", false, "serve the AI only")
 	noOpen := flag.Bool("no-open", false, "do not open a browser")
 	cpu := flag.Bool("cpu", false, "force the CPU backend")
@@ -31,6 +32,7 @@ func main() {
 		Root:          *root,
 		OpenBrowser:   !*noOpen,
 		NoAI:          *noAI,
+		AutoAI:        *autoAI,
 		NoKiwix:       *noKiwix,
 		PreferCPU:     *cpu,
 		LogDir:        *logDir,

@@ -31,10 +31,12 @@ GETTING STARTED
 The library is ready in a few seconds. Sections open in their own browser
 tab, so you can keep several open at once.
 
-The assistant (Survival Advisor) may show "Start assistant" instead of
-"Open". That is deliberate: loading a multi-gigabyte model is heavy, so it
-only happens when you ask. Click it and wait - on a USB stick the first
-load takes one to three minutes. Closing the app frees the memory again.
+The assistant (Survival Advisor) shows "Start assistant" instead of "Open"
+on first launch. That is deliberate: the library always comes up first, and
+loading a multi-gigabyte model competes with it for the same USB device, so
+the assistant only happens when you ask. Click it and wait - on a USB stick
+the first load takes one to three minutes. Closing the app frees the memory
+again, and the library is unaffected if the assistant fails.
 
 Keep the console window open while you use the drive. Closing it stops the
 library and the assistant. Your browser tabs stay readable, but new pages

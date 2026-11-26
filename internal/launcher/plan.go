@@ -124,8 +124,10 @@ const (
 // AIStartMode decides whether the assistant may start unasked.
 //
 // auto=true means the launcher starts it; otherwise reason explains why it is
-// waiting for an explicit request. The library never depends on this either way.
-func AIStartMode(totalRAM, availRAM, smallestNeed int64) (auto bool, reason string) {
+// waiting for an explicit request. Manual start is the default: the library is
+// the part that must always work, and on a USB stick the model load competes
+// with the archives for the same device. allowAuto is the explicit opt-in.
+func AIStartMode(allowAuto bool, totalRAM, availRAM, smallestNeed int64) (auto bool, reason string) {
 	if smallestNeed <= 0 {
 		return false, "no model on this drive"
 	}
@@ -134,6 +136,9 @@ func AIStartMode(totalRAM, availRAM, smallestNeed int64) (auto bool, reason stri
 		return false, fmt.Sprintf(
 			"only %.1f GiB of memory is free and the smallest model needs %.1f GiB",
 			float64(availRAM)/(1<<30), float64(smallestNeed)/(1<<30))
+	}
+	if !allowAuto {
+		return false, "the assistant is started on request so the library always loads first"
 	}
 	if totalRAM < autoAIThreshold {
 		return false, fmt.Sprintf(
